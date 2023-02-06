@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/eslintrc",
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended"
+  ],
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      { "checksVoidReturn": false }
+    ],
+    "@typescript-eslint/no-empty-interface": "off"
+  },
+  "parserOptions": {
+    "project": ["**/tsconfig.json", "**/tsconfig.spec.json"]
+  },
+  "ignorePatterns": ["**/*.js"]
+}

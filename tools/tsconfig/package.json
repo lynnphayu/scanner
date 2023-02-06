@@ -1,0 +1,11 @@
+{
+  "name": "@gr-asmt/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "app.json"
+  ],
+  "dependencies": {
+    "@tsconfig/node14": "^1.0.3"
+  }
+}

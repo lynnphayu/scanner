@@ -1,0 +1,33 @@
+{
+  "name": "@gr-asmt/schemas",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./*": "./dist/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "test": "NODE_ENV=test jest --passWithNoTests",
+    "test:cov": "NODE_ENV=test jest --coverage --passWithNoTests"
+  },
+  "dependencies": {
+    "@nestjs/mongoose": "^9.2.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "mongoose": "^6.9.0",
+    "tslib": "^2.5.0"
+  },
+  "devDependencies": {
+    "@gr-asmt/eslint-config": "workspace:*",
+    "@gr-asmt/tsconfig": "workspace:*",
+    "typescript": "^4.9.5"
+  }
+}

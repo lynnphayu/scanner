@@ -1,0 +1,26 @@
+{
+  "name": "gr-asmt",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo run lint"
+  },
+  "prettier": "@gr-asmt/prettier",
+  "dependencies": {},
+  "devDependencies": {
+    "@gr-asmt/prettier": "workspace:*",
+    "prettier": "latest",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@7.12.2",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

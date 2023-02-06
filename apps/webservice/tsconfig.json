@@ -1,0 +1,10 @@
+{
+  "extends": "@gr-asmt/tsconfig/app.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  }
+}
