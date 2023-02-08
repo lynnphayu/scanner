@@ -1,15 +1,15 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose'
-import {ObjectId, Schema as MongooseSchema} from 'mongoose'
-import {DocumentWithId} from './utils'
+import {Schema as MongooseSchema, Types} from 'mongoose'
+import {DocumentWithId} from '../utils'
 
-@Schema()
+@Schema({_id: false, id: false, versionKey: false})
 export class PostionPlacement {
   @Prop({required: true})
   line: number
 }
 const PostionPlacementSchema = SchemaFactory.createForClass(PostionPlacement)
 
-@Schema()
+@Schema({_id: false, id: false, versionKey: false})
 export class Postion {
   @Prop({required: true, type: PostionPlacementSchema})
   begin: PostionPlacement
@@ -19,7 +19,7 @@ export class Postion {
 }
 const PostionSchema = SchemaFactory.createForClass(Postion)
 
-@Schema()
+@Schema({_id: false, id: false, versionKey: false})
 export class Location {
   @Prop({required: true})
   path: string
@@ -29,7 +29,7 @@ export class Location {
 }
 const LocationSchema = SchemaFactory.createForClass(Location)
 
-@Schema()
+@Schema({_id: false, id: false, versionKey: false})
 export class Finding {
   @Prop({required: true})
   type: string
@@ -42,7 +42,7 @@ const FindingSchema = SchemaFactory.createForClass(Finding)
 @Schema()
 export class ScanResult {
   @Prop({type: MongooseSchema.Types.ObjectId, required: true, unique: true})
-  scanEventId: ObjectId
+  scanEventId: Types.ObjectId
 
   @Prop({type: [{type: FindingSchema}], default: []})
   findings: Finding[]

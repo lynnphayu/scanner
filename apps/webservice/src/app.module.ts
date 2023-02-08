@@ -10,7 +10,7 @@ import {ScanModule} from './scan/scan.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: process.env.NODE_ENV === 'production' ? '.env' : '.env.development',
+      envFilePath: process.env.NODE_ENV ? '.env' : '.env.development',
       isGlobal: true
     }),
     MongooseModule.forRootAsync({

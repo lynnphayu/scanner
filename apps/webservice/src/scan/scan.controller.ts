@@ -1,5 +1,6 @@
-import {ScanResultDocument} from '@gr-asmt/schemas/*'
-import {TOPIC_JOB_PROCESSED, TOPIC_JOB_STARTED} from '@gr-asmt/utils/constants'
+import {Error} from '@gr-asmt/schemas/scan-event'
+import {ScanResultDocument} from '@gr-asmt/schemas/scan-result'
+import {TOPIC_JOB_CREATED_DLT, TOPIC_JOB_PROCESSED, TOPIC_JOB_STARTED} from '@gr-asmt/utils/constants'
 import {commit} from '@gr-asmt/utils/helpers'
 import {Serialized} from '@gr-asmt/utils/interfaces'
 import {Body, Controller, Get, Post} from '@nestjs/common'
@@ -14,7 +15,7 @@ export class ScanController {
 
   @Get()
   get() {
-    return ''
+    return this.scanService.find()
   }
 
   @Post()
@@ -34,6 +35,12 @@ export class ScanController {
   @EventPattern(TOPIC_JOB_STARTED)
   async processJobStarted(@Payload() scanEventId: string, @Ctx() kafkaCtx: KafkaContext) {
     await this.scanService.processJobStarted(scanEventId)
+    await commit(kafkaCtx)
+  }
+
+  @EventPattern(TOPIC_JOB_CREATED_DLT)
+  async processJobFailed(@Payload() payload: {errorOrigin: Error; scanEventId: string}, @Ctx() kafkaCtx: KafkaContext) {
+    await this.scanService.processJobFailed(payload.scanEventId, payload.errorOrigin)
     await commit(kafkaCtx)
   }
 }

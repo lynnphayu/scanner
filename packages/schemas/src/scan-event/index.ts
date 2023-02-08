@@ -1,7 +1,7 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose'
 import {Schema as MongooseSchema} from 'mongoose'
-import {ScanResultDocument, ScanResultSchema} from './scan-result'
-import {DocumentWithId} from './utils'
+import {ScanResultDocument, ScanResultSchema} from '../scan-result'
+import {DocumentWithId} from '../utils'
 
 export enum ScanStatus {
   Queued = 'queued',
@@ -10,6 +10,20 @@ export enum ScanStatus {
   Failure = 'failed',
   Vulnerability = 'vulnerability'
 }
+
+@Schema({_id: false, id: false, versionKey: false})
+export class Error {
+  @Prop({type: String})
+  name: string
+
+  @Prop({type: String})
+  stack?: string
+
+  @Prop({type: String})
+  message: string
+}
+
+export const ErrorSchema = SchemaFactory.createForClass(Error)
 
 @Schema()
 export class ScanEvent {
@@ -35,6 +49,9 @@ export class ScanEvent {
 
   @Prop({type: ScanResultSchema})
   scanResult?: ScanResultDocument
+
+  @Prop({type: ErrorSchema})
+  errorOrigin?: Error
 }
 
 export type ScanEventDocument = ScanEvent & DocumentWithId

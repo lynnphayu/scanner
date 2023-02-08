@@ -1,6 +1,6 @@
 //
 
-import {ScanEvent, ScanEventSchema} from '@gr-asmt/schemas/*'
+import {ScanEvent, ScanEventSchema} from '@gr-asmt/schemas/scan-event'
 import {Module} from '@nestjs/common'
 import {MongooseModule} from '@nestjs/mongoose'
 import {ScanController} from './scan.controller'

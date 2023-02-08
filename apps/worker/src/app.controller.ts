@@ -4,8 +4,8 @@ import {Controller, Get} from '@nestjs/common'
 export class AppController {
   constructor() {}
 
-  @Get()
+  @Get('ping')
   getHello() {
-    return 'HELLO'
+    return 'pong'
   }
 }
