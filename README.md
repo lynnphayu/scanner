@@ -18,7 +18,7 @@ This is a monorepo for vulnerabilities scanning application.
 
 - need kafka and mongodb beforehand
 - rename **.env** to **.env.development** and fill out local env variables
-- `pnpm start:dev` and should be good to go
+- change directory to `apps/webservice` and `pnpm start:dev`, the same goes for worker
 
 ## Test
 
@@ -26,11 +26,14 @@ This is a monorepo for vulnerabilities scanning application.
 - `pnpm test --filter=worker` for worker test and the same goes for others
 
 ## Usage
- - POST to `/scan` to queue a job with body 
- ```
- { repoName: [string] }
- ``` 
- - GET to `/scan/:id` 
+
+- POST to `/scan` to queue a job with body
+
+```
+{ repoName: [string] }
+```
+
+- GET to `/scan/:id`
 
 ## Apps And Packages
 
