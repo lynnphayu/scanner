@@ -6,6 +6,12 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
+    "test": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "inputs": ["**/*.spec.ts"]
+    },
     "lint": {
       "outputs": []
     },

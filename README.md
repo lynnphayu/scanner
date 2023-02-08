@@ -1,73 +1,59 @@
-# Turborepo starter
+# VULNERABILITIES SCANNER
 
-This is an official pnpm starter turborepo.
+This is a monorepo for vulnerabilities scanning application.
 
-## What's inside?
+## Techstack
 
-This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
+- Turborepo
+- NestJs
+- Mongodb
+- Kafka
 
-### Apps and Packages
+## Build
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `pnpm install` in the root (`pnpm install -f` if you are on arm arch)
+- `pnpm build` this will build all packages and apps
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## Start Development Instances
 
-### Utilities
+- need kafka and mongodb beforehand
+- rename **.env** to **.env.development** and fill out local env variables
+- `pnpm start:dev` and should be good to go
 
-This turborepo has some additional tools already setup for you:
+## Test
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- `pnpm test` in the root will test all packages and apps
+- `pnpm test --filter=worker` for worker test and the same goes for others
 
-### Build
+## Usage
+ - POST to `/scan` to queue a job with body 
+ ```
+ { repoName: [string] }
+ ``` 
+ - GET to `/scan/:id` 
 
-To build all apps and packages, run the following command:
+## Apps And Packages
 
-```
-cd my-turborepo
-pnpm run build
-```
+- **webservice** `apps/webservice` : user facing service to push job to message bus
+- **worker** `apps/worker`: service that actually processes the job
+- **@gr-asmt/tsconfig** `tools/tsconfig`: tsconfig for the whole monorepo
+- **@gr-asmt/estlint** `tools/eslint-config`: eslint rules for the whole monorepo
+- **@gr-asmt/prettier** `tools/prettier`: prettier rules for the whole monorepo
+- **@gr-asmt/schemas** `packages/schemas`: mongoose schemas for both services
+- **@gr-asmt/utils** `packages/utils`: package in which topic constants, utils function and ts interfaces reside
 
-### Develop
+## Architectural Planning
 
-To develop all apps and packages, run the following command:
+Application comprises of two main components. User facing webserice and scanner worker.
+Since scan job for worker might actually take several mins to hour. The best way to deal with this situation is to decouple worker process from webservice and make it async. In that case, a message bus will be needed and kafka is choosen for this.
+Here is what will be the process of a scan.
 
-```
-cd my-turborepo
-pnpm run dev
-```
+- Frist, user will call the post endpoint of webservice to put the job.
+- Webservice will create a db entry and dispatch an event about createdJob.
+- Consumer from worker for that event will pick up the job, acknowledge the job by dispatching another event like jobStarted, and will continue to process the job asynchronously. By the time worker finised the processing, it will emit jobPorcessed event to respective topic with the scan result.
+- Respective consumer from webservice will pick up the result and capture the data change.
+- If something went wrong during processing, the job will be push to dead letter topic to examine or reprocess by admin later. Dead letter topic consumer from webservice will capture the event and update the job with error .
 
-### Remote Caching
+**This application doesn't cover reliable reprocessing upon failure.**
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-pnpm dlx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-pnpm dlx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+![High Level Architecture](./arch.jpg)

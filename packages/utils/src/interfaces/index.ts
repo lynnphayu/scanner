@@ -29,10 +29,16 @@ export interface NameGenClientOptions {
   url: string
 }
 
-export interface ConfigInterface {
+export interface CommonConfigInterface {
   mongodb: string
   brokers: string
+}
+
+export type WebserviceConfigInterface = CommonConfigInterface & {
   host: string
   port: string
+}
+
+export type WorkerConfigInterface = CommonConfigInterface & {
   nameGeneratorUrl: string
 }

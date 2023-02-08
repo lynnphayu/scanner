@@ -17,10 +17,14 @@ export class ScanService {
     @Inject(SERVICE_MSG_BUS) private readonly eBus: ClientKafka
   ) {}
 
-  find() {
-    return this.scanEventModel.find()
+  find(id: string) {
+    return this.scanEventModel.findById(id)
   }
 
+  /**
+   * handler for post endpoint
+   * this create a db entry for incoming request and dispatch an event to queue job to the worker.
+   */
   async postJob(data: JobDto) {
     const session = await this.scanEventModel.db.startSession()
     session.startTransaction()
@@ -40,7 +44,7 @@ export class ScanService {
 
   async captureProcessJob(payload: Serialized<ScanResultDocument>) {
     const scanEvent = await this.scanEventModel.findByIdAndUpdate(payload.scanEventId, {
-      status: payload.findings.length && payload.findings.length > 0 ? ScanStatus.Vulnerability : ScanStatus.Success,
+      status: payload.findings.length && payload.findings.length > 0 ? ScanStatus.Failure : ScanStatus.Success,
       scanResult: payload
     })
     return scanEvent
@@ -53,7 +57,6 @@ export class ScanService {
 
   async processJobFailed(scanEventId: string, e: Error) {
     const scanEvent = await this.scanEventModel.findByIdAndUpdate(scanEventId, {
-      status: ScanStatus.Failure,
       errorOrigin: e
     })
     return scanEvent

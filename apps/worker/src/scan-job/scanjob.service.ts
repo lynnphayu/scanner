@@ -21,6 +21,12 @@ export class ScanJobService {
     return Math.floor(Math.random() * pool) + 1
   }
 
+  /**
+   * prcessor for scan job
+   * this will emit job_started event before processing,
+   * job_processed after processing and push to DLT if something went wrong during processing
+   */
+
   async processJob(scanEvent: Serialized<ScanEventDocument>) {
     const session = await this.scanResultModel.db.startSession()
     session.startTransaction()

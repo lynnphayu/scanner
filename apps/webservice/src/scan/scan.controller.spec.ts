@@ -53,9 +53,9 @@ describe('ScanController', () => {
 
   describe('get', () => {
     it('should find with service"', async () => {
-      scanService.find.mockResolvedValueOnce([])
-      const scan = await scanController.get()
-      expect(scan).toEqual([])
+      scanService.find.mockResolvedValueOnce(scanEvent)
+      const scan = await scanController.get(scanEvent._id.toString())
+      expect(scan).toEqual(scanEvent)
     })
   })
 

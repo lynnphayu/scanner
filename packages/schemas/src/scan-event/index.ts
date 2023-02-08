@@ -7,8 +7,7 @@ export enum ScanStatus {
   Queued = 'queued',
   InProgress = 'inprogress',
   Success = 'success',
-  Failure = 'failed',
-  Vulnerability = 'vulnerability'
+  Failure = 'failed'
 }
 
 @Schema({_id: false, id: false, versionKey: false})
@@ -32,7 +31,7 @@ export class ScanEvent {
 
   @Prop({
     type: String,
-    enum: [ScanStatus.Queued, ScanStatus.InProgress, ScanStatus.Success, ScanStatus.Failure, ScanStatus.Vulnerability],
+    enum: [ScanStatus.Queued, ScanStatus.InProgress, ScanStatus.Success, ScanStatus.Failure],
     required: true,
     default: ScanStatus.Queued
   })

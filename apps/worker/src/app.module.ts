@@ -1,10 +1,9 @@
 import {SERVICE_MSG_BUS} from '@gr-asmt/utils/constants'
-import {ConfigInterface} from '@gr-asmt/utils/interfaces'
+import {WorkerConfigInterface} from '@gr-asmt/utils/interfaces'
 import {Module} from '@nestjs/common'
 import {ConfigModule, ConfigService} from '@nestjs/config'
 import {ClientsModule, Transport} from '@nestjs/microservices'
 import {MongooseModule} from '@nestjs/mongoose'
-import {AppController} from './app.controller'
 import {ScanModule} from './scan-job/scanjob.module'
 
 @Module({
@@ -16,8 +15,8 @@ import {ScanModule} from './scan-job/scanjob.module'
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        uri: config.get('mongodb') as string
+      useFactory: (config: ConfigService<WorkerConfigInterface>) => ({
+        uri: config.get<string>('mongodb')
       })
     }),
     {
@@ -27,7 +26,7 @@ import {ScanModule} from './scan-job/scanjob.module'
           name: SERVICE_MSG_BUS,
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: (config: ConfigService<ConfigInterface>) => {
+          useFactory: (config: ConfigService<WorkerConfigInterface>) => {
             return {
               transport: Transport.KAFKA,
               options: {
@@ -44,6 +43,6 @@ import {ScanModule} from './scan-job/scanjob.module'
     },
     ScanModule
   ],
-  controllers: [AppController]
+  controllers: []
 })
 export class AppModule {}

@@ -12,8 +12,7 @@ export class ScanController {
 
   @EventPattern(TOPIC_JOB_CREATED)
   async pushQueue(@Payload() payload: Serialized<ScanEventDocument>, @Ctx() kafkaCtx: KafkaContext) {
-    await this.scanjobService.processJob(payload).then(async (result) => {
-      return commit(kafkaCtx)
-    })
+    await this.scanjobService.processJob(payload)
+    await commit(kafkaCtx)
   }
 }

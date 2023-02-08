@@ -1,5 +1,5 @@
 import {SERVICE_MSG_BUS} from '@gr-asmt/utils/constants'
-import {ConfigInterface} from '@gr-asmt/utils/interfaces'
+import {WebserviceConfigInterface} from '@gr-asmt/utils/interfaces'
 import {Module} from '@nestjs/common'
 import {ConfigModule, ConfigService} from '@nestjs/config'
 import {ClientsModule, Transport} from '@nestjs/microservices'
@@ -27,7 +27,7 @@ import {ScanModule} from './scan/scan.module'
           name: SERVICE_MSG_BUS,
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: (config: ConfigService<ConfigInterface>) => {
+          useFactory: (config: ConfigService<WebserviceConfigInterface>) => {
             return {
               transport: Transport.KAFKA,
               options: {

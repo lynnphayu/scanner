@@ -15,7 +15,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
-    "test": "NODE_ENV=test jest --passWithNoTests",
     "test:cov": "NODE_ENV=test jest --coverage --passWithNoTests"
   },
   "dependencies": {

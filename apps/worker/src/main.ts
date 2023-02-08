@@ -1,4 +1,4 @@
-import {ConfigInterface} from '@gr-asmt/utils/interfaces'
+import {WorkerConfigInterface} from '@gr-asmt/utils/interfaces'
 import {ValidationPipe} from '@nestjs/common'
 import {ConfigService} from '@nestjs/config'
 import {NestFactory} from '@nestjs/core'
@@ -7,7 +7,7 @@ import {AppModule} from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const config: ConfigService<ConfigInterface> = app.get(ConfigService)
+  const config: ConfigService<WorkerConfigInterface> = app.get(ConfigService)
   app.useGlobalPipes(new ValidationPipe({transform: true}))
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
@@ -21,6 +21,5 @@ async function bootstrap() {
     }
   })
   await app.startAllMicroservices()
-  await app.listen(config.get<string>('port')!, config.get<string>('host')!)
 }
 void bootstrap()

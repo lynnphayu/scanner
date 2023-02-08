@@ -3,7 +3,7 @@ import {ScanResultDocument} from '@gr-asmt/schemas/scan-result'
 import {TOPIC_JOB_CREATED_DLT, TOPIC_JOB_PROCESSED, TOPIC_JOB_STARTED} from '@gr-asmt/utils/constants'
 import {commit} from '@gr-asmt/utils/helpers'
 import {Serialized} from '@gr-asmt/utils/interfaces'
-import {Body, Controller, Get, Post} from '@nestjs/common'
+import {Body, Controller, Get, Param, Post} from '@nestjs/common'
 import {Ctx, EventPattern, KafkaContext, Payload} from '@nestjs/microservices'
 
 import {JobDto} from './dtos/job.dto'
@@ -13,9 +13,9 @@ import {ScanService} from './scan.service'
 export class ScanController {
   constructor(private readonly scanService: ScanService) {}
 
-  @Get()
-  get() {
-    return this.scanService.find()
+  @Get('/:id')
+  get(@Param('id') id: string) {
+    return this.scanService.find(id)
   }
 
   @Post()

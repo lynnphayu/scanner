@@ -2,7 +2,7 @@ import {createMock, DeepMocked} from '@golevelup/ts-jest'
 import {ScanEventDocument, ScanStatus} from '@gr-asmt/schemas/scan-event'
 import {ScanResult, ScanResultDocument, ScanResultSchema} from '@gr-asmt/schemas/scan-result'
 import {SERVICE_MSG_BUS, TOPIC_JOB_CREATED_DLT, TOPIC_JOB_PROCESSED, TOPIC_JOB_STARTED} from '@gr-asmt/utils/constants'
-import {ConfigInterface, Serialized} from '@gr-asmt/utils/interfaces'
+import {Serialized, WorkerConfigInterface} from '@gr-asmt/utils/interfaces'
 import {ConfigModule, ConfigService} from '@nestjs/config'
 import {ClientKafka} from '@nestjs/microservices'
 import {MongooseModule} from '@nestjs/mongoose'
@@ -52,7 +52,7 @@ describe('BucketsService', () => {
         MongooseModule.forRootAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: (env: ConfigService<ConfigInterface>) => ({
+          useFactory: (env: ConfigService<WorkerConfigInterface>) => ({
             uri: env.get<string>('mongodb')
           })
         }),

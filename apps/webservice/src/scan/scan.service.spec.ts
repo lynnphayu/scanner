@@ -2,7 +2,7 @@ import {createMock, DeepMocked} from '@golevelup/ts-jest'
 import {ScanEvent, ScanEventDocument, ScanEventSchema, ScanStatus} from '@gr-asmt/schemas/scan-event'
 import {ScanResultDocument} from '@gr-asmt/schemas/scan-result'
 import {SERVICE_MSG_BUS, TOPIC_JOB_CREATED} from '@gr-asmt/utils/constants'
-import {ConfigInterface, Serialized} from '@gr-asmt/utils/interfaces'
+import {Serialized, WebserviceConfigInterface} from '@gr-asmt/utils/interfaces'
 import {ConfigModule, ConfigService} from '@nestjs/config'
 import {ClientKafka} from '@nestjs/microservices'
 import {MongooseModule} from '@nestjs/mongoose'
@@ -46,7 +46,7 @@ describe('BucketsService', () => {
         MongooseModule.forRootAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: (env: ConfigService<ConfigInterface>) => ({
+          useFactory: (env: ConfigService<WebserviceConfigInterface>) => ({
             uri: env.get<string>('mongodb')
           })
         }),
@@ -67,10 +67,10 @@ describe('BucketsService', () => {
   })
 
   it('should find from db', async () => {
-    const modelFind = jest.spyOn(scanService['scanEventModel'], 'find').mockResolvedValueOnce([])
-    const res = await scanService.find()
+    const modelFind = jest.spyOn(scanService['scanEventModel'], 'findById').mockResolvedValueOnce(scanEvent)
+    const res = await scanService.find(scanEvent._id.toString())
     expect(modelFind).toBeCalledTimes(1)
-    expect(res).toEqual([])
+    expect(res).toEqual(scanEvent)
   })
 
   describe('postJob', () => {
@@ -150,7 +150,7 @@ describe('BucketsService', () => {
         ]
       })
       expect(modelFindByIdAndUpdate).toBeCalledWith(serializedScanResult.scanEventId, {
-        status: ScanStatus.Vulnerability,
+        status: ScanStatus.Failure,
         scanResult: {
           ...serializedScanResult,
           findings: [
@@ -187,7 +187,6 @@ describe('BucketsService', () => {
       .mockResolvedValueOnce(scanEvent)
     const res = await scanService.processJobFailed('SCANID', {name: 'E', message: 'M'})
     expect(modelFindByIdAndUpdate).toBeCalledWith('SCANID', {
-      status: ScanStatus.Failure,
       errorOrigin: {name: 'E', message: 'M'}
     })
     expect(res).toEqual(scanEvent)
